@@ -17,6 +17,8 @@ var App = function() {
 App.prototype.bind = function() {
 	var self = this;
 
+	FastClick.attach(document.body);
+
 	// Updates timeline while video is playing
 	this.el.video.on('timeupdate', function() {
 		self.updateTimeline();
@@ -24,7 +26,6 @@ App.prototype.bind = function() {
 
 	// Click on the video seek video
 	this.el.timeline.click(function(e) {
-		console.log(e.clientX, self.el.videoWrapper.offset().left)
 		var offset = e.clientX - self.el.videoWrapper.offset().left;
 		var percentage = offset / self.el.timeline.width();
 		self.jumpTo(percentage);
