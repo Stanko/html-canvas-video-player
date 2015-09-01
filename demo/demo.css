@@ -1,3 +1,17 @@
+body {
+	background: #fdfdfd;
+}
+
+.color-grey {
+	color: #aaa;
+}
+
+.header {
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 20px;
+	background: #fff;
+}
+
 .video-wrapper {
 	position: relative;
 	margin: 0 auto;
