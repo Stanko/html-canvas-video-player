@@ -41,17 +41,25 @@
 		<h3 class="margin-bottom-20">Easy way to play videos inline on iPhones</h3>
 		<p>
 			This is intended for iPhone only, it can be used on any other browser
-			which support canvas and video. It doesn't play sound, I have no real
-			plan of adding audio support.
+			which support canvas and video. <strike>It doesn't play sound, I have no real
+			plan of adding audio support.</strike>
+		</p>
+		<p>
+			<span class="color-error">IMPORTANT</span>
+			<br>
+			Audio is now supported. Autoplay on iOS is NOT working with
+			audio (autoplay is disabled in that case). Audio is not tested on IE9.
+			Jumping to time can make audio and video to go out of sync (as one is
+			loaded faster than the other). So test thoroughly before using it in production.
 		</p>
 		<p>
 			It can be used with any HTML video player, just position canvas over the video.
 			Intended usage was for background videos and showcases.
-			It doesn't include timeline as in demo, but that piece of code is also on GitHub.
+			Still, if you can, use regular HTML5 video, this was intended to use only on iPhones.
 			This is plain JavaScript solution, no dependencies, IE9+ and modern browsers.
 		</p>
 		<p>
-			For IE9 there must be <code>requestAnimationFrame</code> polyfill
+			For IE9 there must be <code>requestAnimationFrame</code> polyfill.
 		</p>
 		<p>
 			Download on
@@ -61,8 +69,8 @@
 <h4 class="margin-top-30">Minimum setup:</h4>
 <pre>
 var canvasVideo = new <span class="color-success">CanvasVideoPlayer</span>({
-    videoSelector: '.js-video',
-    canvasSelector: '.js-canvas'
+		videoSelector: '.js-video',
+		canvasSelector: '.js-canvas'
 });
 </pre>
 
@@ -71,8 +79,12 @@ var canvasVideo = new <span class="color-success">CanvasVideoPlayer</span>({
 var canvasVideo = new <span class="color-success">CanvasVideoPlayer</span>({
     videoSelector: '.js-video',
     canvasSelector: '.js-canvas',
+    timelineSelector: '.js-timeline',
     framesPerSecond: 25,
-    hideVideo: true <span class="color-grey">// should script hide the video element</span>
+    hideVideo: true, <span class="color-grey">// should script hide the video element</span>
+    autoplay: true,
+    audio: true, <span class="color-grey">// <span class="color-error">IMPORTANT</span>
+                 // On iOS can't be used together with autoplay, autoplay will be disabled</span>
 });
 </pre>
 
@@ -97,11 +109,13 @@ canvasVideo.drawFrame()
 <h4 class="margin-top-30">Detecting iPhone:</h4>
 <pre>
 var isIphone = navigator.userAgent.toLowerCase().indexOf('iphone') >= 0;
+<span class="color-grey">// Other way to detect iOS</span>
+<span class="color-grey">// var isIOS = /iPad|iPhone|iPod/.test(navigator.platform);</span>
 
 if (isIphone) {
     <span class="color-grey">// Init CanvasVideoPlayer here</span>
     new <span class="color-success">CanvasVideoPlayer</span>({
-    	<span class="color-grey">// Options</span>
+        <span class="color-grey">// Options</span>
     });
 }
 </pre>
@@ -122,7 +136,9 @@ if (isIphone) {
 	<script>
 		var canvasVideo = new CanvasVideoPlayer({
 			videoSelector: '.js-video',
-			canvasSelector: '.js-canvas'
+			canvasSelector: '.js-canvas',
+			timelineSelector: '.js-timeline',
+			audio: true,
 		});
 	</script>
 </body>
