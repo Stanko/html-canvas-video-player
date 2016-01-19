@@ -14,6 +14,7 @@ var CanvasVideoPlayer = function(options) {
 		autoplay: false,
 		audio: false,
 		timelineSelector: false,
+		maxLag: .100
 	};
 
 	for (i in options) {
@@ -230,8 +231,8 @@ CanvasVideoPlayer.prototype.loop = function() {
 	if(elapsed >= (1 / this.options.framesPerSecond)) {
 		this.video.currentTime = this.video.currentTime + elapsed;
 		this.lastTime = time;
-		// Resync audio and video if they drift more than 5ms apart
-		if(this.audio && Math.abs(this.audio.currentTime - this.video.currentTime) > 5){
+		// Resync audio and video if they drift apart; default 100ms
+		if(this.audio && Math.abs(this.audio.currentTime - this.video.currentTime) > this.options.maxLag){
 			this.audio.currentTime = this.video.currentTime;
 		}
 	}
