@@ -45,12 +45,8 @@
 			plan of adding audio support.</strike>
 		</p>
 		<p>
-			<span class="color-error">IMPORTANT</span>
-			<br>
 			Audio is now supported. Autoplay on iOS is NOT working with
-			audio (autoplay is disabled in that case). Audio is not tested on IE9.
-			Jumping to time can make audio and video to go out of sync (as one is
-			loaded faster than the other). So test thoroughly before using it in production.
+			audio (autoplay is disabled in that case).
 		</p>
 		<p>
 			It can be used with any HTML video player, just position canvas over the video.
@@ -58,9 +54,21 @@
 			Still, if you can, use regular HTML5 video, this was intended to use only on iPhones.
 			This is plain JavaScript solution, no dependencies, IE9+ and modern browsers.
 		</p>
+
 		<p>
 			For IE9 there must be <code>requestAnimationFrame</code> polyfill.
+			Audio is not tested on IE9.
 		</p>
+
+		<h5>Known issues</h5>
+		<ul>
+			<li>
+				It is very buggy and sometimes doesn't work at all on Android.
+				I don't have plans for fixing this, if someone has idea, please issue a pull request.
+				Just use regular HTML5 video.
+			</li>
+		</ul>
+
 		<p>
 			Download on
 			<a href="https://github.com/Stanko/html-canvas-video-player">GitHub</a>.
@@ -83,8 +91,8 @@ var canvasVideo = new <span class="color-success">CanvasVideoPlayer</span>({
     framesPerSecond: 25,
     hideVideo: true, <span class="color-grey">// should script hide the video element</span>
     autoplay: true,
-    audio: true, <span class="color-grey">// <span class="color-error">IMPORTANT</span>
-                 // On iOS can't be used together with autoplay, autoplay will be disabled</span>
+    <span class="color-grey">// <span class="color-error">IMPORTANT</span> On iOS can't be used together with autoplay, autoplay will be disabled</span>
+    audio: true, <span class="color-grey">// can be true/false (it will use video file for audio), or selector for a separate audio file</span>
 });
 </pre>
 
@@ -117,6 +125,9 @@ if (isIphone) {
     new <span class="color-success">CanvasVideoPlayer</span>({
         <span class="color-grey">// Options</span>
     });
+}
+else {
+    <span class="color-grey">// Use HTML5 video</span>
 }
 </pre>
 

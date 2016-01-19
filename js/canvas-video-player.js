@@ -46,9 +46,14 @@ var CanvasVideoPlayer = function(options) {
 	}
 
 	if (this.options.audio) {
-		if (this.options.audioSelector){
+		if (typeof(this.options.audio) === 'string'){
 			// Use audio selector from options if specified
-			this.audio = document.querySelectorAll(this.options.audioSelector)[0];
+			this.audio = document.querySelectorAll(this.options.audio)[0];
+
+			if (!this.audio) {
+				console.error('Element for the "audio" not found');
+				return;
+			}
 		} else {
 			// Creates audio element which uses same video sources
 			this.audio = document.createElement('audio');
