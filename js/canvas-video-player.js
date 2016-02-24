@@ -46,11 +46,21 @@ var CanvasVideoPlayer = function(options) {
 	}
 
 	if (this.options.audio) {
-		// Creates audio element which uses same video sources
-		this.audio = document.createElement('audio');
-		this.audio.innerHTML = this.video.innerHTML;
-		this.video.parentNode.insertBefore(this.audio, this.video);
-		this.audio.load();
+		if (typeof(this.options.audio) === 'string'){
+			// Use audio selector from options if specified
+			this.audio = document.querySelectorAll(this.options.audio)[0];
+
+			if (!this.audio) {
+				console.error('Element for the "audio" not found');
+				return;
+			}
+		} else {
+			// Creates audio element which uses same video sources
+			this.audio = document.createElement('audio');
+			this.audio.innerHTML = this.video.innerHTML;
+			this.video.parentNode.insertBefore(this.audio, this.video);
+			this.audio.load();
+		}
 
 		var iOS = /iPad|iPhone|iPod/.test(navigator.platform);
 		if (iOS) {
@@ -187,6 +197,8 @@ CanvasVideoPlayer.prototype.play = function() {
 	this.loop();
 
 	if (this.options.audio) {
+		// Resync audio and video
+		this.audio.currentTime = this.video.currentTime;
 		this.audio.play();
 	}
 };
@@ -218,6 +230,10 @@ CanvasVideoPlayer.prototype.loop = function() {
 	if(elapsed >= (1 / this.options.framesPerSecond)) {
 		this.video.currentTime = this.video.currentTime + elapsed;
 		this.lastTime = time;
+		// Resync audio and video if they drift more than 5ms apart
+		if(this.audio && Math.abs(this.audio.currentTime - this.video.currentTime) > 5){
+			this.audio.currentTime = this.video.currentTime;
+		}
 	}
 
 	// If we are at the end of the video stop
