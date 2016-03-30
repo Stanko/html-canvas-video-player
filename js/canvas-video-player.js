@@ -14,7 +14,7 @@ var CanvasVideoPlayer = function(options) {
 		autoplay: false,
 		audio: false,
 		timelineSelector: false,
-                resetOnLastFrame: true
+		resetOnLastFrame: true
 	};
 
 	for (i in options) {
@@ -246,9 +246,10 @@ CanvasVideoPlayer.prototype.loop = function() {
 	// If we are at the end of the video stop
 	if (this.video.currentTime >= this.video.duration) {
 		this.playing = false;
-                if (this.options.resetOnLastFrame === true) {
-		        this.video.currentTime = 0;
-                }
+
+		if (this.options.resetOnLastFrame === true) {
+			this.video.currentTime = 0;
+		}
 	}
 
 	if (this.playing) {
