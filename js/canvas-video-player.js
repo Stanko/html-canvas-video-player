@@ -14,6 +14,7 @@ var CanvasVideoPlayer = function(options) {
 		autoplay: false,
 		audio: false,
 		timelineSelector: false,
+                resetOnLastFrame: true
 	};
 
 	for (i in options) {
@@ -236,8 +237,8 @@ CanvasVideoPlayer.prototype.loop = function() {
 	if(elapsed >= (1 / this.options.framesPerSecond)) {
 		this.video.currentTime = this.video.currentTime + elapsed;
 		this.lastTime = time;
-		// Resync audio and video if they drift more than 5ms apart
-		if(this.audio && Math.abs(this.audio.currentTime - this.video.currentTime) > 5){
+		// Resync audio and video if they drift more than 300ms apart
+		if(this.audio && Math.abs(this.audio.currentTime - this.video.currentTime) > .3){
 			this.audio.currentTime = this.video.currentTime;
 		}
 	}
@@ -245,7 +246,9 @@ CanvasVideoPlayer.prototype.loop = function() {
 	// If we are at the end of the video stop
 	if (this.video.currentTime >= this.video.duration) {
 		this.playing = false;
-		this.video.currentTime = 0;
+                if (this.options.resetOnLastFrame === true) {
+		        this.video.currentTime = 0;
+                }
 	}
 
 	if (this.playing) {
