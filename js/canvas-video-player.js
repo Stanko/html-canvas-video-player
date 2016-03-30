@@ -143,6 +143,12 @@ CanvasVideoPlayer.prototype.bind = function() {
 		self.drawFrame();
 	});
 
+	// To be sure 'canplay' event that isn't already fired
+	if (this.video.readyState >= 2) {
+    self.drawFrame();
+	});
+
+
 	if (self.options.autoplay) {
 	  self.play();
 	}
