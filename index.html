@@ -94,9 +94,9 @@ var canvasVideo = new <span class="color-success">CanvasVideoPlayer</span>({
     timelineSelector: '.js-timeline',
     framesPerSecond: 25,
     hideVideo: true, <span class="color-grey">// should script hide the video element</span>
-    autoplay: true,
+    autoplay: false,
     <span class="color-grey">// <span class="color-error">IMPORTANT</span> On iOS can't be used together with autoplay, autoplay will be disabled</span>
-    audio: true, <span class="color-grey">// can be true/false (it will use video file for audio), or selector for a separate audio file</span>
+    audio: false, <span class="color-grey">// can be true/false (it will use video file for audio), or selector for a separate audio file</span>
     resetOnLastFrame: true <span class="color-grey">// should video reset back to the first frame after it finishes playing</span>
 });
 </pre>
@@ -121,7 +121,7 @@ canvasVideo.drawFrame()
 
 <h4 class="margin-top-30">Detecting iPhone:</h4>
 <pre>
-var isIphone = navigator.userAgent.toLowerCase().indexOf('iphone') >= 0;
+var isIphone = navigator.userAgent.indexOf('iPhone') >= 0;
 <span class="color-grey">// Other way to detect iOS</span>
 <span class="color-grey">// var isIOS = /iPad|iPhone|iPod/.test(navigator.platform);</span>
 
