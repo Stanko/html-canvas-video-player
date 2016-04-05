@@ -21,10 +21,10 @@ var CanvasVideoPlayer = function(options) {
 		this.options[i] = options[i];
 	}
 
-	this.video = document.querySelectorAll(this.options.videoSelector)[0];
-	this.canvas = document.querySelectorAll(this.options.canvasSelector)[0];
-	this.timeline = document.querySelectorAll(this.options.timelineSelector)[0];
-	this.timelinePassed = document.querySelectorAll(this.options.timelineSelector + '> div')[0];
+	this.video = document.querySelector(this.options.videoSelector);
+	this.canvas = document.querySelector(this.options.canvasSelector);
+	this.timeline = document.querySelector(this.options.timelineSelector);
+	this.timelinePassed = document.querySelector(this.options.timelineSelector + '> div');
 
 	if (!this.options.videoSelector || !this.video) {
 		console.error('No "videoSelector" property, or the element is not found');
