@@ -278,6 +278,7 @@ CanvasVideoPlayer.prototype.loop = function() {
 	// Render
 	if(elapsed >= (1 / this.options.framesPerSecond)) {
 		this.video.currentTime = this.video.currentTime + elapsed;
+		this.fire('progress', this.video.currentTime);
 		if (this.options.cuepoints.length) {
 			var latestCuepoint, index = 0;
 			while (typeof(this.options.cuepoints[index]) !== 'undefined' && this.options.cuepoints[index] < this.video.currentTime) {
@@ -297,6 +298,7 @@ CanvasVideoPlayer.prototype.loop = function() {
 	// If we are at the end of the video stop
 	if (this.video.currentTime >= this.video.duration) {
 		this.playing = false;
+		this.fire('finish');
 
 		if (this.options.resetOnLastFrame === true) {
 			this.video.currentTime = 0;
