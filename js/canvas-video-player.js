@@ -239,6 +239,10 @@ CanvasVideoPlayer.prototype.playPause = function() {
 	}
 };
 
+CanvasVideoPlayer.prototype.setCuepoints = function(cuepoints) {
+	this.options.cuepoints = cuepoints;
+};
+
 CanvasVideoPlayer.prototype.on = function(eventName, callback) {
 	if (!eventName || !callback) return this;
 	if (!this.eventHandlers[eventName]) this.eventHandlers[eventName] = [];
