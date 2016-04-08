@@ -49,7 +49,7 @@ var CanvasVideoPlayer = function(options) {
 	if (this.options.audio) {
 		if (typeof(this.options.audio) === 'string'){
 			// Use audio selector from options if specified
-			this.audio = document.querySelectorAll(this.options.audio)[0];
+			this.audio = document.querySelector(this.options.audio);
 
 			if (!this.audio) {
 				console.error('Element for the "audio" not found');
@@ -91,6 +91,8 @@ CanvasVideoPlayer.prototype.init = function() {
 	if (this.options.hideVideo) {
 		this.video.style.display = 'none';
 	}
+
+	this.eventHandlers = {};
 };
 
 // Used most of the jQuery code for the .offset() method
@@ -151,7 +153,7 @@ CanvasVideoPlayer.prototype.bind = function() {
 
 
 	if (self.options.autoplay) {
-	  self.play();
+		self.play();
 	}
 
 	// Click on the video seek video
@@ -227,6 +229,32 @@ CanvasVideoPlayer.prototype.playPause = function() {
 	}
 };
 
+CanvasVideoPlayer.prototype.on = function(eventName, callback) {
+	if (!eventName || !callback) return this;
+	if (!this.eventHandlers[eventName]) this.eventHandlers[eventName] = [];
+	this.eventHandlers[eventName].push(callback);
+	return this;
+};
+
+CanvasVideoPlayer.prototype.off = function(eventName, callback) {
+	if (!callback) {
+		this.eventHandlers[eventName] = [];
+		return this;
+	}
+	this.eventHandlers[eventName] = this.eventHandlers[eventName].filter(function (handler) {
+		return (callback !== handler);
+	});
+	return this;
+};
+
+CanvasVideoPlayer.prototype.fire = function(eventName, eventData) {
+	if (!this.eventHandlers[eventName] || !this.eventHandlers[eventName].length) return;
+	var self = this;
+	this.eventHandlers[eventName].forEach(function (handler) {
+		handler.call(self, eventData);
+	});
+};
+
 CanvasVideoPlayer.prototype.loop = function() {
 	var self = this;
 
@@ -236,6 +264,15 @@ CanvasVideoPlayer.prototype.loop = function() {
 	// Render
 	if(elapsed >= (1 / this.options.framesPerSecond)) {
 		this.video.currentTime = this.video.currentTime + elapsed;
+		if (this.options.cuepoints.length) {
+			var latestCuepoint, index = 0;
+			while (typeof(this.options.cuepoints[index]) !== 'undefined' && this.options.cuepoints[index] < this.video.currentTime) {
+				latestCuepoint = this.options.cuepoints[index++];
+			}
+			if (latestCuepoint && latestCuepoint > this.video.currentTime - elapsed) {
+				this.fire('cuepoint', { 'time': latestCuepoint, 'index': index-1 });
+			}
+		}
 		this.lastTime = time;
 		// Resync audio and video if they drift more than 300ms apart
 		if(this.audio && Math.abs(this.audio.currentTime - this.video.currentTime) > .3){
