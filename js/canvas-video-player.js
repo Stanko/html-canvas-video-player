@@ -14,7 +14,8 @@ var CanvasVideoPlayer = function(options) {
 		autoplay: false,
 		audio: false,
 		timelineSelector: false,
-		resetOnLastFrame: true
+		resetOnLastFrame: true,
+		loop: false
 	};
 
 	for (i in options) {
@@ -151,7 +152,6 @@ CanvasVideoPlayer.prototype.bind = function() {
 		self.drawFrame();
 	}
 
-
 	if (self.options.autoplay) {
 		self.play();
 	}
@@ -275,7 +275,7 @@ CanvasVideoPlayer.prototype.loop = function() {
 		}
 		this.lastTime = time;
 		// Resync audio and video if they drift more than 300ms apart
-		if(this.audio && Math.abs(this.audio.currentTime - this.video.currentTime) > .3){
+		if(this.audio && Math.abs(this.audio.currentTime - this.video.currentTime) > 0.3){
 			this.audio.currentTime = this.video.currentTime;
 		}
 	}
@@ -286,6 +286,11 @@ CanvasVideoPlayer.prototype.loop = function() {
 
 		if (this.options.resetOnLastFrame === true) {
 			this.video.currentTime = 0;
+		}
+
+		if (this.options.loop === true) {
+			this.video.currentTime = 0;
+			this.play();
 		}
 	}
 
