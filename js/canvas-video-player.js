@@ -299,6 +299,7 @@ CanvasVideoPlayer.prototype.loop = function() {
 	if (this.video.currentTime >= this.video.duration) {
 		this.playing = false;
 		this.fire('finish');
+		this.off('finish');
 
 		if (this.options.resetOnLastFrame === true) {
 			this.video.currentTime = 0;
