@@ -14,6 +14,7 @@ Thanks to everyone who issued pull requests.
 [![](http://i.imgur.com/kHV1hbh.png)](http://stanko.github.io/html-canvas-video-player)
 
 ### Changelog
+* Rewrote to ES6+ and added universal module
 * Few minor tweaks (thanks to pull requests)
 * Added audio support and moved timeline to the main JS file
 * Initial release

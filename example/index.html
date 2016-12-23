@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" >
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+
+	<title>Canvas video player</title>
+
+	<link rel="stylesheet" href="https://stanko.github.io/skyblue/css/skyblue.css">
+
+	<style>
+		body {
+			background: #fdfdfd;
+		}
+
+		.color-grey {
+			color: #aaa;
+		}
+
+		.header {
+			border-bottom: 1px solid #ddd;
+			margin-bottom: 20px;
+			background: #fff;
+		}
+
+		.video-wrapper {
+			position: relative;
+			margin: 0 auto;
+			max-width: 800px;
+		}
+
+		.content {
+			position: relative;
+			margin: 0 auto;
+			padding: 20px;
+			max-width: 840px;
+		}
+
+		.video-responsive {
+			padding-bottom: 56.25%;
+			position: relative;
+			width: 100%;
+		}
+
+		.canvas,
+		.video {
+			height: 100%;
+			left: 0;
+			position: absolute;
+			top: 0;
+			width: 100%;
+			background: #000;
+			z-index: 5;
+			cursor: pointer;
+		}
+
+		.video-timeline {
+			background: rgba(255, 255, 255, 0.4);
+			bottom: 0;
+			cursor: pointer;
+			height: 12px;
+			left: 0;
+			opacity: 1;
+			position: absolute;
+			transition: all 0.2s;
+			width: 100%;
+			z-index: 12;
+
+			overflow: hidden;
+		}
+
+		.video-timeline-passed {
+			background: #E81D31;
+			height: 100%;
+			width: 100%;
+		}
+		@media screen and (min-width: 768px) {
+			.video-timeline-passed {
+				background: rgba(255, 255, 255, 0.7);
+			}
+		}
+
+
+		.video-wrapper:hover .video-timeline {
+			height: 12px;
+			opacity: 0.85;
+		}
+
+		.video-wrapper:hover .video-timeline-passed {
+			background: #E81D31;
+		}
+
+		.video-wrapper:hover .video-event {
+			bottom: 12px;
+		}
+
+		.video-wrapper:hover .video-timeline-event {
+			background: #790c17;
+			opacity: 0.8;
+		}
+	</style>
+</head>
+
+<body>
+
+<div class="header">
+	<div class="content">
+		<a href="https://github.com/Stanko/html-canvas-video-player" class="padding-right-20">GitHub</a>
+		<a href="https://github.com/Stanko/html-canvas-video-player/archive/master.zip">Download</a>
+	</div>
+</div>
+
+<div class="video-wrapper js-video-wrapper">
+	<div class="video-responsive">
+		<video class="video js-video" muted>
+			<source src="http://www.quirksmode.org/html5/videos/big_buck_bunny.webm" type="video/webm">
+			<source src="http://www.quirksmode.org/html5/videos/big_buck_bunny.mp4" type="video/mp4">
+			<source src="http://www.quirksmode.org/html5/videos/big_buck_bunny.ogv" type="video/ogg">
+			Your browser does not support HTML5 video.
+		</video>
+
+		<canvas class="canvas js-canvas"></canvas>
+
+		<div class="video-timeline js-timeline">
+			<div class="video-timeline-passed js-timeline-passed">
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="content">
+	<h1 class="margin-bottom-10">HTML canvas video player</h1>
+	<h3 class="margin-bottom-20">Easy way to play videos inline on iPhones</h3>
+	<p>
+		This is intended for iPhone only, it can be used on any other browser
+		which support canvas and video. <strike>It doesn't play sound, I have no real
+		plan of adding audio support.</strike>
+	</p>
+	<p>
+		Audio is now supported. Autoplay on iOS is NOT working with
+		audio (autoplay is disabled in that case).
+	</p>
+	<p>
+		It can be used with any HTML video player, just position canvas over the video.
+		Intended usage was for background videos and showcases.
+		Still, if you can, use regular HTML5 video, this was intended to use only on iPhones.
+		This is plain JavaScript solution, no dependencies, IE9+ and modern browsers.
+	</p>
+
+	<p>
+		For IE9 there must be <code>requestAnimationFrame</code> polyfill.
+		Audio is not tested on IE9.
+	</p>
+
+	<p>
+		Please let me know if you are using this player, I would like to make a small showcase, thanks!
+	</p>
+
+	<h5>Known issues</h5>
+	<ul>
+		<li>
+			It is very buggy and sometimes doesn't work at all on Android.
+			I don't have plans for fixing this, if someone has idea, please issue a pull request.
+			Just use regular HTML5 video.
+		</li>
+	</ul>
+
+	<p>
+		Download on
+		<a href="https://github.com/Stanko/html-canvas-video-player">GitHub</a>.
+	</p>
+
+	<h4 class="margin-top-30">Minimum setup:</h4>
+<pre>
+var canvasVideo = new <span class="color-success">CanvasVideoPlayer</span>({
+    videoSelector: '.js-video',
+    canvasSelector: '.js-canvas'
+});
+</pre>
+
+	<h4 class="margin-top-30">Aditional options:</h4>
+<pre>
+var canvasVideo = new <span class="color-success">CanvasVideoPlayer</span>({
+    videoSelector: '.js-video',
+    canvasSelector: '.js-canvas',
+    timelineSelector: '.js-timeline',
+    timelinePassedSelector: '.js-timeline-passed',
+    framesPerSecond: 25,
+    hideVideo: true, <span class="color-grey">// should script hide the video element</span>
+    autoplay: false,
+    <span class="color-grey">// <span class="color-error">IMPORTANT</span> On iOS can't be used together with autoplay, autoplay will be disabled, IE doesn't support</span>
+    audio: false, <span class="color-grey">// can be true/false (it will use video file for audio), or selector for a separate audio file</span>
+    resetOnLastFrame: true, <span class="color-grey">// should video reset back to the first frame after it finishes playing</span>
+		loop: false
+});
+</pre>
+
+	<h4 class="margin-top-30">Methods:</h4>
+<pre>
+<span class="color-grey">// binds all of the events and start playing if autoplay</span>
+canvasVideo.init()
+
+<span class="color-grey">// Unbinds all of the events</span>
+canvasVideo.destroy()
+
+<span class="color-grey">// Plays video</span>
+canvasVideo.play()
+
+<span class="color-grey">// Pauses video</span>
+canvasVideo.pause()
+
+<span class="color-grey">// Plays video if paused and vice versa</span>
+canvasVideo.playPause()
+</pre>
+
+	<p class="margin-top-50">
+		Released under MIT licence.
+	</p>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script src="../lib/canvas-video-player.js"></script>
+
+
+<script>
+	var canvasVideo = new CanvasVideoPlayer({
+		videoSelector: '.js-video',
+		canvasSelector: '.js-canvas',
+		timelineSelector: '.js-timeline',
+		timelinePassedSelector: '.js-timeline-passed',
+		audio: true,
+		loop: true
+	});
+</script>
+</body>
+</html>

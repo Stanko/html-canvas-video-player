@@ -1,0 +1,41 @@
+{
+  "name": "canvas-video-player",
+  "version": "0.1.22",
+  "description": "",
+  "main": "lib/canvas-video-player.js",
+  "scripts": {
+    "clear": "rmdir /s /q lib",
+    "loc": "webpack --mode=loc",
+    "dev": "webpack --mode=dev",
+    "prod": "webpack --mode=prod",
+    "build": "npm run dev && npm run prod",
+    "lint": "eslint **/*.js"
+  },
+  "devDependencies": {
+    "babel": "6.5.2",
+    "babel-core": "6.18.2",
+    "babel-eslint": "7.1.1",
+    "babel-loader": "6.2.8",
+    "babel-plugin-add-module-exports": "0.2.1",
+    "babel-plugin-transform-object-assign": "^6.8.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "compression-webpack-plugin": "^0.3.2",
+    "eslint": "3.11.1",
+    "eslint-config-google": "^0.7.1",
+    "eslint-loader": "1.6.1",
+    "webpack": "1.13.3",
+    "yargs": "6.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [],
+  "author": {},
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "dependencies": {}
+}
