@@ -245,20 +245,6 @@ CanvasVideoPlayer.prototype.loop = function() {
 		}
 	}
 
-	// If we are at the end of the video stop
-	if (this.video.currentTime >= this.video.duration) {
-		this.playing = false;
-
-		if (this.options.resetOnLastFrame === true) {
-			this.video.currentTime = 0;
-		}
-
-		if (this.options.loop === true) {
-			this.video.currentTime = 0;
-			this.play();
-		}
-	}
-
 	if (this.playing) {
 		this.animationFrame = requestAnimationFrame(function(){
 			self.loop();
