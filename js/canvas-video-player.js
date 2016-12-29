@@ -2,7 +2,8 @@ var cvpHandlers = {
 	canvasClickHandler: null,
 	videoTimeUpdateHandler: null,
 	videoCanPlayHandler: null,
-	windowResizeHandler: null
+	windowResizeHandler: null,
+       videoOnEndHandler: null
 };
 
 var CanvasVideoPlayer = function(options) {
@@ -177,6 +178,7 @@ CanvasVideoPlayer.prototype.bind = function() {
 		this.canvas.removeEventListener('click', cvpHandlers.canvasClickHandler);
 		this.video.removeEventListener('timeupdate', cvpHandlers.videoTimeUpdateHandler);
 		this.video.removeEventListener('canplay', cvpHandlers.videoCanPlayHandler);
+               this.video.removeEventListener('ended', cvpHandlers.videoOnEndHandler);
 		window.removeEventListener('resize', cvpHandlers.windowResizeHandler);
 
 		if (this.options.audio) {
