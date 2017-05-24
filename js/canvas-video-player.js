@@ -15,7 +15,8 @@ var CanvasVideoPlayer = function(options) {
 		audio: false,
 		timelineSelector: false,
 		resetOnLastFrame: true,
-		loop: false
+		loop: false,
+            	endedEventName: 'complete' // enabling users to setup their own event name on video ended.
 	};
 
 	for (i in options) {
@@ -246,6 +247,8 @@ CanvasVideoPlayer.prototype.loop = function() {
 	// If we are at the end of the video stop
 	if (this.video.currentTime >= this.video.duration) {
 		this.playing = false;
+		
+            	this.video.dispatchEvent(new Event(this.options.endedEventName));
 
 		if (this.options.resetOnLastFrame === true) {
 			this.video.currentTime = 0;
