@@ -252,7 +252,7 @@ CanvasVideoPlayer.prototype.loop = function() {
 			evt = document.createEvent('CustomEvent');
 			evt.initCustomEvent(this.options.endedEventName, true, true);
 		}
-		video.dispatchEvent(evt);
+		this.video.dispatchEvent(evt);
 		
 		if (this.options.resetOnLastFrame === true) {
 			this.video.currentTime = 0;
