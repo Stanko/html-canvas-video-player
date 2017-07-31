@@ -1,6 +1,6 @@
 # Depreciation notice
 
-This was intended for auto-playing videos on iOS, but as of iOS 10, there is native supported option `playsinline`, red more here: 
+This was intended for auto-playing videos on iOS, but as of iOS 10, there is native supported option `playsinline`, read more here: 
 https://webkit.org/blog/6784/new-video-policies-for-ios/ (Android works for ages now). 
 
 So this project is not actively maintained anymore. Use native HTML video instead of it.
