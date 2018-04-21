@@ -133,16 +133,21 @@ CanvasVideoPlayer.prototype.bind = function() {
 	});
 
 	// On every time update draws frame
-	this.video.addEventListener('timeupdate', cvpHandlers.videoTimeUpdateHandler = function() {
+	this.video.addEventListener('seeked', cvpHandlers.videoTimeUpdateHandler = function() {
 		self.drawFrame();
 		if (self.options.timelineSelector) {
 			self.updateTimeline();
 		}
 	});
 
+	var isCanPlayTriggered = false;
+
 	// Draws first frame
 	this.video.addEventListener('canplay', cvpHandlers.videoCanPlayHandler = function() {
-		self.drawFrame();
+		if (!isCanPlayTriggered) {
+			self.drawFrame();
+			isCanPlayTriggered = true;
+		}
 	});
 
 	// To be sure 'canplay' event that isn't already fired
