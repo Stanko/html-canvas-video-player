@@ -115,7 +115,8 @@ var canvasVideo = new <span class="color-success">CanvasVideoPlayer</span>({
     <span class="color-grey">// <span class="color-error">IMPORTANT</span> On iOS can't be used together with autoplay, autoplay will be disabled</span>
     audio: false, <span class="color-grey">// can be true/false (it will use video file for audio), or selector for a separate audio file</span>
     resetOnLastFrame: true, <span class="color-grey">// should video reset back to the first frame after it finishes playing</span>
-		loop: false
+    cuepoints: [], <span class="color-grey">// if set player will trigger "cuepoint" "event" on provided timepoints (timepoints are float seconds from video start)</span>
+    loop: false
 });
 </pre>
 
@@ -135,6 +136,25 @@ canvasVideo.playPause()
 
 <span class="color-grey">// Draws current frame on canvas, should not be called manually</span>
 canvasVideo.drawFrame()
+
+<span class="color-grey">// subscribe callback on eventName "event". Callback will receive one argument - plain object with keys "time" (value of occured cuepoint) and "index" (index of cuepoint, starting from zero)</span>
+canvasVideo.on(eventName, callback)
+
+<span class="color-grey">// unsubscribes given callback from eventName (for this to work it is required that callback is saved as a variable, as opposed to providing anonymous function). If no callback is given, unsubscribes all callbacks from eventName.</span>
+canvasVideo.off(eventName, callback)
+
+<span class="color-grey">// fires eventName with eventData which will be passed to all callbacks registered for this eventName (normally this is called by player itself)</span>
+canvasVideo.fire(eventName, eventData)
+
+<span class="color-grey">/* supported "events" (they are not real JavaScript events. only player knows about them)
+	* ready - happens after drawing first frame on video (this happens on initialization). Data passed to callbacks is { width: pixels, height: pixels, duration: float seconds }
+	* progress - happens after new frame is drawed. Data is current video progress (float seconds)
+	* cuepoint - happens at time positions passed in "cuepoints" option or set via setCuepoints method. Data passed is { "time": cuepoint_value, "index": cuepoint_index }
+	* finish - happens after video is ended. No data is passed.
+*/</span>
+
+<span class="color-grey">// set cuepoints property (which also could be set via options on player creation). This is useful when you do not know in advance what is your cuepoints are and calculate them in "ready" callback using video duration for example.</span>
+canvasVideo.setCuepoints()
 </pre>
 
 <h4 class="margin-top-30">Detecting iPhone:</h4>
