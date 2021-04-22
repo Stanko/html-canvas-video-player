@@ -1,10 +1,3 @@
-var cvpHandlers = {
-	canvasClickHandler: null,
-	videoTimeUpdateHandler: null,
-	videoCanPlayHandler: null,
-	windowResizeHandler: null
-};
-
 var CanvasVideoPlayer = function(options) {
 	var i;
 
@@ -15,7 +8,8 @@ var CanvasVideoPlayer = function(options) {
 		audio: false,
 		timelineSelector: false,
 		resetOnLastFrame: true,
-		loop: false
+		loop: false,
+            	endedEventName: 'complete' // enabling users to setup their own event name on video ended.
 	};
 
 	for (i in options) {
@@ -127,23 +121,35 @@ CanvasVideoPlayer.prototype.jumpTo = function(percentage) {
 CanvasVideoPlayer.prototype.bind = function() {
 	var self = this;
 
+        var cvpHandlers = {
+            videoTimeUpdateHandler: function(){
+                self.drawFrame();
+                if (self.options.timelineSelector){
+                    self.updateTimeline();
+                }
+            },
+            videoCanPlayHandler: function(){
+                self.drawFrame();
+            },
+            windowResizeHandler: function(){
+                clearTimeout(self.resizeTimeoutReference);
+                self.resizeTimeoutReference = setTimeout(function() {
+                    self.setCanvasSize();
+                    self.drawFrame();
+                }, self.RESIZE_TIMEOUT);
+            },
+        };
+
 	// Playes or pauses video on canvas click
 	this.canvas.addEventListener('click', cvpHandlers.canvasClickHandler = function() {
 		self.playPause();
 	});
 
-	// On every time update draws frame
-	this.video.addEventListener('timeupdate', cvpHandlers.videoTimeUpdateHandler = function() {
-		self.drawFrame();
-		if (self.options.timelineSelector) {
-			self.updateTimeline();
-		}
-	});
+        // On every time update draws frame
+        this.video.addEventListener('timeupdate', cvpHandlers.videoTimeUpdateHandler);
 
-	// Draws first frame
-	this.video.addEventListener('canplay', cvpHandlers.videoCanPlayHandler = function() {
-		self.drawFrame();
-	});
+        // Draws first frame
+        this.video.addEventListener('canplaythrough', cvpHandlers.videoCanPlayHandler);
 
 	// To be sure 'canplay' event that isn't already fired
 	if (this.video.readyState >= 2) {
@@ -151,7 +157,7 @@ CanvasVideoPlayer.prototype.bind = function() {
 	}
 
 	if (self.options.autoplay) {
-	  self.play();
+		self.play();
 	}
 
 	// Click on the video seek video
@@ -163,15 +169,8 @@ CanvasVideoPlayer.prototype.bind = function() {
 		});
 	}
 
-	// Cache canvas size on resize (doing it only once in a second)
-	window.addEventListener('resize', cvpHandlers.windowResizeHandler = function() {
-		clearTimeout(self.resizeTimeoutReference);
-
-		self.resizeTimeoutReference = setTimeout(function() {
-			self.setCanvasSize();
-			self.drawFrame();
-		}, self.RESIZE_TIMEOUT);
-	});
+        // Cache canvas size on resize (doing it only once in a second)
+        window.addEventListener('resize', cvpHandlers.windowResizeHandler);
 
 	this.unbind = function() {
 		this.canvas.removeEventListener('click', cvpHandlers.canvasClickHandler);
@@ -229,7 +228,7 @@ CanvasVideoPlayer.prototype.playPause = function() {
 
 CanvasVideoPlayer.prototype.loop = function() {
 	var self = this;
-
+	var evt;
 	var time = Date.now();
 	var elapsed = (time - this.lastTime) / 1000;
 
@@ -246,7 +245,15 @@ CanvasVideoPlayer.prototype.loop = function() {
 	// If we are at the end of the video stop
 	if (this.video.currentTime >= this.video.duration) {
 		this.playing = false;
-
+		
+		if (typeof Event !== 'undefined'){
+			evt = new Event(this.options.endedEventName);
+		} else {
+			evt = document.createEvent('CustomEvent');
+			evt.initCustomEvent(this.options.endedEventName, true, true);
+		}
+		this.video.dispatchEvent(evt);
+		
 		if (this.options.resetOnLastFrame === true) {
 			this.video.currentTime = 0;
 		}
