@@ -15,7 +15,8 @@ var CanvasVideoPlayer = function(options) {
 		audio: false,
 		timelineSelector: false,
 		resetOnLastFrame: true,
-		loop: false
+		loop: false,
+		muted: false
 	};
 
 	for (i in options) {
@@ -50,7 +51,7 @@ var CanvasVideoPlayer = function(options) {
 	if (this.options.audio) {
 		if (typeof(this.options.audio) === 'string'){
 			// Use audio selector from options if specified
-			this.audio = document.querySelectorAll(this.options.audio)[0];
+			this.audio = document.querySelector(this.options.audio);
 
 			if (!this.audio) {
 				console.error('Element for the "audio" not found');
@@ -70,6 +71,8 @@ var CanvasVideoPlayer = function(options) {
 			// User have to manually start the audio
 			this.options.autoplay = false;
 		}
+
+		this.muted = this.options.muted;
 	}
 
 	// Canvas context
@@ -206,7 +209,7 @@ CanvasVideoPlayer.prototype.play = function() {
 	if (this.options.audio) {
 		// Resync audio and video
 		this.audio.currentTime = this.video.currentTime;
-		this.audio.play();
+		if (!this.muted) this.audio.play();
 	}
 };
 
@@ -226,6 +229,18 @@ CanvasVideoPlayer.prototype.playPause = function() {
 		this.play();
 	}
 };
+
+CanvasVideoPlayer.prototype.mute = function (setMute) {
+	if (setMute !== true && setMute !== false) setMute = !this.muted;
+	this.muted = setMute;
+	if (!this.audio) return;
+	if (this.muted) {
+		this.audio.pause();
+	} else {
+		this.audio.currentTime = this.video.currentTime;
+		this.audio.play();
+	}
+}
 
 CanvasVideoPlayer.prototype.loop = function() {
 	var self = this;
